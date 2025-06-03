@@ -2,109 +2,179 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8" />
-<title>How2virus 😈</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How2virus - iPadOS Style</title>
 <style>
+  /* Grundlayout & Schrift */
   html, body {
     margin: 0; padding: 0; height: 100%;
-    background: black;
-    color: lime;
-    font-family: monospace;
+    background: #0a0a0a; /* Dunkler Hintergrund */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    color: #fff;
     overflow: hidden;
     user-select: none;
   }
-  canvas {
-    position: fixed; top: 0; left: 0;
+  
+  /* Matrix Canvas */
+  #matrix {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     z-index: 0;
+    opacity: 0.15; /* etwas transparent für dezenteren Effekt */
   }
+  
+  /* Fenster-Container (Windows) */
   .window {
     position: absolute;
-    background: #1e1e1e;
-    border: 2px solid lime;
-    width: 400px;
-    height: 250px;
-    z-index: 2;
-    color: lime;
+    background: rgba(255 255 255 / 0.15);
+    border-radius: 20px;
+    border: 1px solid rgba(255 255 255 / 0.2);
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.5),
+      inset 0 0 60px rgba(255 255 255 / 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: #fff;
+    width: 420px;
+    height: 280px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 10px lime;
+    z-index: 10;
     user-select: text;
   }
+  
+  /* Titelbar */
   .title-bar {
-    background: darkgreen;
-    padding: 5px;
-    cursor: move;
+    background: rgba(255 255 255 / 0.25);
+    padding: 12px 18px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    font-weight: 600;
+    font-size: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: grab;
   }
-  .title-bar span {
-    font-weight: bold;
+  
+  .title-bar:active {
+    cursor: grabbing;
+  }
+  
+  /* Fenster Buttons im iPad-Stil */
+  .title-buttons {
+    display: flex;
+    gap: 12px;
   }
   .title-buttons button {
-    background: red;
-    color: white;
+    background: #ff3b30; /* rot */
+    border-radius: 50%;
     border: none;
-    width: 20px;
-    height: 20px;
-    margin-left: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    line-height: 18px;
+    width: 18px;
+    height: 18px;
     padding: 0;
-  }
-  .content {
-    padding: 10px;
-    flex: 1;
-    overflow-y: auto;
-    background: #111;
-    white-space: pre-wrap;
-    font-size: 14px;
-    line-height: 1.3;
-  }
-  #scanner {
-    background: #222;
-    padding: 10px;
-    border: 2px solid lime;
-    font-size: 13px;
-    height: 120px;
-    overflow-y: auto;
-    margin-top: 10px;
-  }
-  .btn {
-    margin-top: 10px;
-    padding: 7px 15px;
-    background: limegreen;
-    border: none;
-    color: black;
-    font-weight: bold;
     cursor: pointer;
-    border-radius: 5px;
-    user-select:none;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    transition: background 0.2s;
   }
+  .title-buttons button.minimize {
+    background: #ff9500; /* gelb */
+  }
+  .title-buttons button.close:hover {
+    background: #d1302a;
+  }
+  .title-buttons button.minimize:hover {
+    background: #cc7f00;
+  }
+  
+  /* Content */
+  .content {
+    flex: 1;
+    padding: 16px;
+    font-size: 15px;
+    overflow-y: auto;
+    line-height: 1.4;
+    font-family: monospace, monospace;
+    white-space: pre-wrap;
+    -webkit-user-select: text;
+  }
+  
+  /* Buttons im Inhalt */
+  button.action {
+    background: rgba(255 255 255 / 0.25);
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.25s;
+    margin-top: 12px;
+    user-select: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  button.action:hover {
+    background: rgba(255 255 255 / 0.4);
+  }
+  
+  /* Musik-Steuerung im iPad-Stil */
+  #music-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255 255 255 / 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    color: white;
+    font-weight: 700;
+    padding: 12px 24px;
+    cursor: pointer;
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    z-index: 999;
+    transition: background 0.3s;
+  }
+  #music-control:hover {
+    background: rgba(255 255 255 / 0.35);
+  }
+  
+  /* Bluescreen */
   #bluescreen {
     position: fixed;
-    top:0; left:0; width: 100%; height:100%;
-    background: #AA0000;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #007aff;
     color: white;
-    font-family: monospace;
-    font-size: 20px;
-    padding: 30px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-size: 28px;
+    padding: 40px 30px;
     display: none;
     z-index: 9999;
-    white-space: pre-wrap;
-    text-align:center;
-    animation: flicker 1s infinite;
+    user-select: none;
   }
-  @keyframes flicker {
-    0%, 100% {opacity:1;}
-    50% {opacity:0.6;}
+  #bluescreen h1 {
+    font-size: 56px;
+    margin-bottom: 20px;
+    font-weight: 800;
   }
+  #bluescreen p {
+    max-width: 600px;
+    line-height: 1.4;
+  }
+  
+  /* Rickroll Fullscreen */
   #rickroll {
     display: none;
     position: fixed;
-    z-index: 9998;
+    z-index: 10000;
     top: 0; left: 0;
-    width: 100%; height: 100%;
+    width: 100vw; height: 100vh;
     background: black;
   }
   #rickroll iframe {
@@ -112,27 +182,21 @@
     height: 100%;
     border: none;
   }
-  #soundcontrol {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    z-index: 10000;
-    background: rgba(0,0,0,0.7);
-    border: 1px solid lime;
-    padding: 10px;
-    border-radius: 10px;
-    color: lime;
-    user-select:none;
+
+  /* Scrollbar schön machen */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
-  #soundcontrol button {
-    background: limegreen;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 5px 10px;
-    margin-left: 10px;
-    border-radius: 5px;
-    color: black;
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255 255 255 / 0.3);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255 255 255 / 0.6);
   }
 </style>
 </head>
@@ -141,274 +205,268 @@
 <canvas id="matrix"></canvas>
 
 <!-- Admin Terminal Window -->
-<div id="adminWindow" class="window" style="top:30px; left:30px;">
-  <div class="title-bar" onmousedown="startDrag(event, 'adminWindow')">
-    <span>Admin Terminal</span>
+<div class="window" id="admin-window" style="top: 60px; left: 60px;">
+  <div class="title-bar" id="admin-bar">
+    <span>Admin-Terminal</span>
     <div class="title-buttons">
-      <button onclick="minimizeWindow('adminWindow')">_</button>
-      <button onclick="closeWindow('adminWindow')">×</button>
+      <button class="close" title="Schließen" onclick="closeWindow('admin-window')"></button>
+      <button class="minimize" title="Minimieren" onclick="minimizeWindow('admin-window')"></button>
     </div>
   </div>
-  <div class="content" id="adminContent">admin@how2virus:~$ </div>
+  <div class="content" id="admin-content" contenteditable="true" spellcheck="false" aria-label="Admin Terminal">
+admin@root:~$ 
+  </div>
 </div>
 
-<!-- Virus Scanner Window -->
-<div id="scannerWindow" class="window" style="top:320px; left:30px; width: 450px; height: 300px;">
-  <div class="title-bar" onmousedown="startDrag(event, 'scannerWindow')">
+<!-- Virenscanner Window -->
+<div class="window" id="scanner-window" style="top: 60px; left: 520px;">
+  <div class="title-bar" id="scanner-bar">
     <span>Fake Virenscanner</span>
     <div class="title-buttons">
-      <button onclick="minimizeWindow('scannerWindow')">_</button>
-      <button onclick="closeWindow('scannerWindow')">×</button>
+      <button class="close" title="Schließen" onclick="closeWindow('scanner-window')"></button>
+      <button class="minimize" title="Minimieren" onclick="minimizeWindow('scanner-window')"></button>
     </div>
   </div>
-  <div class="content">
-    <div id="scanner">Scan wird gestartet...</div>
-    <button class="btn" onclick="startScan()">Scan starten</button>
+  <div class="content" id="scanner-content">
+    <button class="action" onclick="startScan()">Scan starten</button>
+    <pre id="scan-log" aria-live="polite" aria-atomic="true"></pre>
   </div>
 </div>
 
-<!-- Blue Screen -->
-<div id="bluescreen">
-  <pre>
-!!! ACHTUNG !!! VIRUS ERKANNT !!!
-
-SYSTEMFEHLER - SCHWERER SCHADEN
-Das System wird in 10 Sekunden heruntergefahren!
-
-Bitte speichern Sie Ihre Daten nicht – alle Dateien sind infiziert!
-
-Fehlercode: 0xDEADCAFE
-  </pre>
+<!-- Bluescreen -->
+<div id="bluescreen" role="alert" tabindex="0" onclick="hideBluescreen()">
+  <h1>:(</h1>
+  <p>Ihr PC ist auf einen Bluescreen gelaufen.</p>
+  <p>Stop-Code: HOW2VIRUS_FAKE_ERROR</p>
+  <p>Klicken Sie hier, um neu zu starten...</p>
 </div>
 
 <!-- Rickroll -->
-<div id="rickroll">
-  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&loop=1&playlist=dQw4w9WgXcQ" allow="autoplay" allowfullscreen></iframe>
+<div id="rickroll" role="dialog" aria-modal="true" aria-label="Rickroll Video">
+  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 </div>
 
-<!-- Sound Control -->
-<div id="soundcontrol">
-  Sound: <button onclick="toggleSound()" id="soundBtn">Play</button>
+<!-- Musik Steuerung -->
+<div id="music-control" role="button" tabindex="0" aria-pressed="false" onclick="toggleMusic()" onkeypress="if(event.key==='Enter') toggleMusic()">
+  🔈 Musik: Aus
 </div>
+
+<audio id="virus-music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/22/audio_57c606b144.mp3?filename=retro-future-11715.mp3" type="audio/mpeg" />
+</audio>
 
 <script>
-  // Vollbild aktivieren
+  // === Vollbildmodus (ein Klick aktivieren) ===
   function enableFullscreen() {
     const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    if (!document.fullscreenElement) {
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(el.msRequestFullscreen) el.msRequestFullscreen();
+    }
   }
 
-  // Automatisch Virus.pdf herunterladen beim ersten Laden
-  window.onload = () => {
-    const link = document.createElement('a');
-    link.href = 'Virus.pdf';       // Pfad zur Virus.pdf
-    link.download = 'Virus.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setTimeout(() => {
-      enableFullscreen();
-      startMatrix();
-      adminTypeText("Willkommen zu How2virus...\nTippe 'help' für Befehle.");
-    }, 500);
-  };
-
-  // Matrix Effekt
+  // === Matrix Effekt ===
   function startMatrix() {
     const c = document.getElementById('matrix');
     const ctx = c.getContext('2d');
+    let w, h;
+    const letters = "01";
+    let fontSize = 14;
+    let columns;
 
-    c.height = window.innerHeight;
-    c.width = window.innerWidth;
+    function resize() {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      c.width = w;
+      c.height = h;
+      columns = Math.floor(w / fontSize);
+    }
+    resize();
 
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%&*';
-    const fontSize = 16;
-    const columns = c.width / fontSize;
-
-    const drops = [];
-    for (let x = 0; x < columns; x++) drops[x] = 1;
+    let drops = [];
+    for(let x=0; x<columns; x++) drops[x] = Math.random()*h;
 
     function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, c.width, c.height);
-
-      ctx.fillStyle = '#0F0';
-      ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+      ctx.fillStyle = "rgba(0,0,0,0.07)";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "#00FF41";
+      ctx.font = fontSize + "px monospace";
+      for(let i=0; i<columns; i++) {
+        let text = letters.charAt(Math.floor(Math.random()*letters.length));
+        ctx.fillText(text, i*fontSize, drops[i]*fontSize);
         drops[i]++;
+        if(drops[i]*fontSize > h && Math.random() > 0.975) drops[i] = 0;
       }
+      requestAnimationFrame(draw);
     }
-    setInterval(draw, 50);
+    draw();
+
+    window.addEventListener('resize', resize);
   }
 
-  // Admin Terminal mit Texteingabe simulieren
-  const adminContent = document.getElementById('adminContent');
-  let commandBuffer = '';
+  // === Fenster Drag & Drop ===
+  function dragElement(elmnt, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    handle.onmousedown = dragMouseDown;
 
-  document.addEventListener('keydown', (e) => {
-    if (!document.body.contains(adminContent)) return;
-    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-      commandBuffer += e.key;
-      adminContent.textContent += e.key;
-    } else if (e.key === 'Backspace') {
-      if (commandBuffer.length > 0) {
-        commandBuffer = commandBuffer.slice(0, -1);
-        adminContent.textContent = adminContent.textContent.slice(0, -1);
+    function dragMouseDown(e) {
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+      handle.style.cursor = 'grabbing';
+    }
+
+    function elementDrag(e) {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      let newTop = elmnt.offsetTop - pos2;
+      let newLeft = elmnt.offsetLeft - pos1;
+      // Fenster nicht aus Bildschirm schieben
+      newTop = Math.max(20, Math.min(window.innerHeight - elmnt.offsetHeight - 20, newTop));
+      newLeft = Math.max(20, Math.min(window.innerWidth - elmnt.offsetWidth - 20, newLeft));
+      elmnt.style.top = newTop + "px";
+      elmnt.style.left = newLeft + "px";
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+      handle.style.cursor = 'grab';
+    }
+  }
+
+  // Fenster schließen & minimieren
+  function closeWindow(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function minimizeWindow(id) {
+    const win = document.getElementById(id);
+    if(win.style.height !== '40px') {
+      win.style.height = '40px';
+      win.querySelector('.content').style.display = 'none';
+    } else {
+      win.style.height = '280px';
+      win.querySelector('.content').style.display = 'block';
+    }
+  }
+
+  // === Admin Terminal Interaktion ===
+  const adminContent = document.getElementById('admin-content');
+  adminContent.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      e.preventDefault();
+      let lines = adminContent.innerText.split('\n');
+      let currentLine = lines[lines.length-1].replace(/^admin@root:~\$ /, '').trim();
+      let output = '';
+      if(currentLine === 'help') {
+        output = "Befehle:\nhelp\nclear\nrickroll\nbluescreen\nvirus\nexit";
+      } else if(currentLine === 'clear') {
+        adminContent.innerText = 'admin@root:~$ ';
+        placeCaretAtEnd(adminContent);
+        return;
+      } else if(currentLine === 'rickroll') {
+        showRickroll();
+        output = "Rickroll wird gestartet...";
+      } else if(currentLine === 'bluescreen') {
+        showBluescreen();
+        output = "Bluescreen aktiviert.";
+      } else if(currentLine === 'virus') {
+        startFakeVirus();
+        output = "Virus gestartet!";
+      } else if(currentLine === 'exit') {
+        output = "Terminal beendet. (Fenster bleibt offen)";
+      } else {
+        output = "Unbekannter Befehl: " + currentLine;
       }
-    } else if (e.key === 'Enter') {
-      adminContent.textContent += '\n';
-      processCommand(commandBuffer.toLowerCase());
-      commandBuffer = '';
-      adminContent.textContent += 'admin@how2virus:~$ ';
-      scrollToBottom(adminContent);
+      adminContent.innerText += '\n' + output + '\nadmin@root:~$ ';
+      placeCaretAtEnd(adminContent);
     }
   });
-
-  function scrollToBottom(el) {
-    el.scrollTop = el.scrollHeight;
-  }
-
-  function processCommand(cmd) {
-    switch (cmd) {
-      case 'help':
-        adminContent.textContent +=
-          'Verfügbare Befehle:\n' +
-          'scan - Virus Scan starten\n' +
-          'rickroll - Überraschung\n' +
-          'bluescreen - Systemabsturz simulieren\n' +
-          'clear - Terminal leeren\n';
-        break;
-      case 'scan':
-        startScan();
-        break;
-      case 'rickroll':
-        showRickroll();
-        break;
-      case 'bluescreen':
-        showBlueScreen();
-        break;
-      case 'clear':
-        adminContent.textContent = 'admin@how2virus:~$ ';
-        break;
-      default:
-        adminContent.textContent += 'Befehl nicht erkannt: ' + cmd + '\n';
+  function placeCaretAtEnd(el) {
+    el.focus();
+    if(typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+      let range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      let sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
   }
 
-  // Fake Virenscanner
-  const scannerOutput = document.getElementById('scanner');
+  // === Virenscanner Fake ===
   let scanInterval;
-
   function startScan() {
-    const messages = [
-      'System wird überprüft...',
-      'Malware gefunden: Trojan.Virus',
-      'Schadcode wird isoliert...',
-      'Systemfehler erkannt!',
-      'Virus wird entfernt...',
-      'Scan abgeschlossen. Kein Virus mehr gefunden.'
-    ];
-    let i = 0;
-    scannerOutput.textContent = '';
+    const log = document.getElementById('scan-log');
+    log.innerText = 'Scan wird gestartet...\n';
+    let progress = 0;
     clearInterval(scanInterval);
-
     scanInterval = setInterval(() => {
-      if (i >= messages.length) {
+      if(progress >= 100) {
         clearInterval(scanInterval);
-        scannerOutput.textContent += '\nScan beendet.';
+        log.innerText += '\nAchtung! Trojaner gefunden: HOW2VIRUS_3000.exe\nBitte sofort handeln!';
         return;
       }
-      scannerOutput.textContent += messages[i] + '\n';
-      scannerOutput.scrollTop = scannerOutput.scrollHeight;
-      i++;
-    }, 1500);
+      progress += Math.floor(Math.random()*10)+1;
+      if(progress > 100) progress = 100;
+      log.innerText = `Scan läuft... ${progress}%`;
+    }, 400);
   }
 
-  // Blue Screen anzeigen
-  function showBlueScreen() {
-    const bs = document.getElementById('bluescreen');
-    bs.style.display = 'block';
-    setTimeout(() => {
-      bs.style.display = 'none';
-    }, 10000);
+  // === Bluescreen ===
+  function showBluescreen() {
+    document.getElementById('bluescreen').style.display = 'flex';
+    document.getElementById('bluescreen').focus();
+  }
+  function hideBluescreen() {
+    document.getElementById('bluescreen').style.display = 'none';
   }
 
-  // Rickroll anzeigen
+  // === Rickroll ===
   function showRickroll() {
-    const r = document.getElementById('rickroll');
-    r.style.display = 'block';
-    setTimeout(() => {
-      r.style.display = 'none';
-    }, 30000);
+    const rick = document.getElementById('rickroll');
+    rick.style.display = 'block';
   }
 
-  // Fenster verschieben
-  let dragTarget = null;
-  let dragOffsetX = 0;
-  let dragOffsetY = 0;
-
-  function startDrag(e, id) {
-    dragTarget = document.getElementById(id);
-    dragOffsetX = e.clientX - dragTarget.offsetLeft;
-    dragOffsetY = e.clientY - dragTarget.offsetTop;
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', stopDrag);
+  // === Fake Virus Start ===
+  function startFakeVirus() {
+    alert("Virus startet... Simuliere Systemfehler!");
+    showBluescreen();
   }
 
-  function drag(e) {
-    if (!dragTarget) return;
-    dragTarget.style.left = (e.clientX - dragOffsetX) + 'px';
-    dragTarget.style.top = (e.clientY - dragOffsetY) + 'px';
-  }
+  // === Musik Steuerung ===
+  const music = document.getElementById('virus-music');
+  const musicControl = document.getElementById('music-control');
+  let musicPlaying = false;
 
-  function stopDrag() {
-    dragTarget = null;
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', stopDrag);
-  }
-
-  function minimizeWindow(id) {
-    const w = document.getElementById(id);
-    if (w.style.height !== '30px') {
-      w.dataset.oldHeight = w.style.height;
-      w.style.height = '30px';
-      w.querySelector('.content').style.display = 'none';
+  function toggleMusic() {
+    if(musicPlaying) {
+      music.pause();
+      musicControl.textContent = '🔈 Musik: Aus';
+      musicControl.setAttribute('aria-pressed', 'false');
     } else {
-      w.style.height = w.dataset.oldHeight || '250px';
-      w.querySelector('.content').style.display = 'block';
+      music.play();
+      musicControl.textContent = '🔊 Musik: An';
+      musicControl.setAttribute('aria-pressed', 'true');
     }
+    musicPlaying = !musicPlaying;
   }
 
-  function closeWindow(id) {
-    const w = document.getElementById(id);
-    w.style.display = 'none';
-  }
+  // Fenster Drag & Drop initialisieren
+  dragElement(document.getElementById('admin-window'), document.getElementById('admin-bar'));
+  dragElement(document.getElementById('scanner-window'), document.getElementById('scanner-bar'));
 
-  // Sound (Rickroll)
-  let audio;
-  function toggleSound() {
-    if (!audio) {
-      audio = new Audio('videoplayback.mp3'); // eigene mp3 muss im Ordner sein
-      audio.loop = true;
-      audio.play();
-      document.getElementById('soundBtn').textContent = 'Pause';
-    } else if (audio.paused) {
-      audio.play();
-      document.getElementById('soundBtn').textContent = 'Pause';
-    } else {
-      audio.pause();
-      document.getElementById('soundBtn').textContent = 'Play';
-    }
-  }
+  // Matrix starten
+  startMatrix();
+
+  // Beim Laden Vollbild versuchen
+  window.onload = () => setTimeout(enableFullscreen, 500);
 </script>
-
 </body>
 </html>
