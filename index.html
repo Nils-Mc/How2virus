@@ -1,236 +1,308 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>How2virus 😈</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: black;
-      color: lime;
-      font-family: monospace;
-      overflow: hidden;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
-
-    .window {
-      position: absolute;
-      background: #1e1e1e;
-      border: 2px solid lime;
-      width: 400px;
-      height: 250px;
-      z-index: 2;
-      color: lime;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 0 10px lime;
-    }
-
-    .title-bar {
-      background: darkgreen;
-      padding: 5px;
-      cursor: move;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .title-bar span {
-      font-weight: bold;
-    }
-
-    .title-buttons button {
-      background: red;
-      color: white;
-      border: none;
-      width: 20px;
-      height: 20px;
-      margin-left: 5px;
-      cursor: pointer;
-    }
-
-    .content {
-      padding: 10px;
-      flex: 1;
-      overflow-y: auto;
-      background: black;
-    }
-
-    button.action {
-      background: lime;
-      color: black;
-      border: none;
-      padding: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    #rickroll {
-      display: none;
-      position: fixed;
-      z-index: 99;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    #rickroll iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    #bluescreen {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #0000aa;
-      color: white;
-      font-family: monospace;
-      padding: 50px;
-      font-size: 18px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>How2virus 😈</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: black; color: lime;
+    font-family: monospace; overflow: hidden;
+  }
+  canvas {
+    position: fixed; top: 0; left: 0; z-index: 0;
+  }
+  .window {
+    position: absolute; background: #1e1e1e; border: 2px solid lime;
+    width: 400px; height: 250px; z-index: 2; color: lime;
+    display: flex; flex-direction: column; box-shadow: 0 0 10px lime;
+    user-select: none;
+  }
+  .title-bar {
+    background: darkgreen; padding: 5px; cursor: move;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .title-bar span {
+    font-weight: bold;
+  }
+  .title-buttons button {
+    background: red; color: white; border: none;
+    width: 22px; height: 22px; margin-left: 5px; cursor: pointer;
+    font-weight: bold; font-size: 14px; line-height: 20px;
+  }
+  .content {
+    flex: 1; padding: 10px; background: black; color: lime;
+    overflow-y: auto; white-space: pre-wrap; font-size: 14px;
+  }
+  button.action {
+    background: lime; color: black; border: none;
+    padding: 5px 10px; margin-top: 10px; cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  #music-control {
+    position: fixed; bottom: 10px; right: 10px; background: darkgreen;
+    color: lime; padding: 8px 12px; border-radius: 8px;
+    cursor: pointer; user-select: none; z-index: 10;
+    font-weight: bold;
+  }
+  #bluescreen {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: #0000aa; color: white; font-family: monospace;
+    font-size: 24px; padding: 40px;
+    display: none; z-index: 9999;
+  }
+  #bluescreen h1 {
+    font-size: 40px; margin-bottom: 20px;
+  }
+  #rickroll {
+    display: none; position: fixed; z-index: 99999; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+  }
+  #rickroll iframe {
+    width: 100%; height: 100%; border: none;
+  }
+</style>
 </head>
 <body onclick="enableFullscreen()">
 
-  <canvas id="matrix"></canvas>
+<canvas id="matrix"></canvas>
 
-  <div class="window" id="terminalWin" style="top: 50px; left: 50px;">
-    <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
-      <span>Admin Terminal</span>
-      <div class="title-buttons">
-        <button onclick="this.closest('.window').style.display='none'">X</button>
-      </div>
-    </div>
-    <div class="content" id="terminalContent">admin@root:~$</div>
-  </div>
-
-  <div class="window" id="scannerWin" style="top: 350px; left: 80px;">
-    <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
-      <span>Fake Virenscanner</span>
-      <div class="title-buttons">
-        <button onclick="this.closest('.window').style.display='none'">X</button>
-      </div>
-    </div>
-    <div class="content">
-      Scanne Laufwerk C: ...<br>
-      🔍 Trojaner.exe gefunden!<br>
-      ⚠️ Quarantäne fehlgeschlagen!<br>
-      <button class="action" onclick="rickroll()">Virus entfernen</button>
+<!-- Admin Terminal Window -->
+<div class="window" id="admin-window" style="top: 50px; left: 50px;">
+  <div class="title-bar" id="admin-bar">
+    <span>Admin-Terminal</span>
+    <div class="title-buttons">
+      <button onclick="closeWindow('admin-window')">×</button>
+      <button onclick="minimizeWindow('admin-window')">–</button>
     </div>
   </div>
-
-  <div class="window" id="soundWin" style="top: 150px; left: 500px;">
-    <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
-      <span>Sound Kontrolle</span>
-      <div class="title-buttons">
-        <button onclick="this.closest('.window').style.display='none'">X</button>
-      </div>
-    </div>
-    <div class="content">
-      <button class="action" onclick="document.getElementById('beep').play()">🔊 Sound an</button><br>
-      <button class="action" onclick="document.getElementById('beep').pause()">🔇 Sound aus</button>
-    </div>
+  <div class="content" id="admin-content" contenteditable="true" spellcheck="false">
+admin@root:~$ 
   </div>
+</div>
 
-  <div class="window" id="bsodWin" style="top: 220px; left: 600px;">
-    <div class="title-bar" onmousedown="startDrag(event, this.parentElement)">
-      <span>BlueScreen.exe</span>
-      <div class="title-buttons">
-        <button onclick="this.closest('.window').style.display='none'">X</button>
-      </div>
-    </div>
-    <div class="content">
-      <button class="action" onclick="blueScreen()">🧨 Bluescreen auslösen</button>
+<!-- Virenscanner Window -->
+<div class="window" id="scanner-window" style="top: 50px; left: 500px;">
+  <div class="title-bar" id="scanner-bar">
+    <span>Fake Virenscanner</span>
+    <div class="title-buttons">
+      <button onclick="closeWindow('scanner-window')">×</button>
+      <button onclick="minimizeWindow('scanner-window')">–</button>
     </div>
   </div>
-
-  <div id="bluescreen">
-    💀 Ein Problem wurde festgestellt und Windows wurde heruntergefahren, um den Computer zu schützen.<br><br>
-    DRIVER_IRQL_NOT_LESS_OR_EQUAL<br><br>
-    STOP: 0x000000D1 (0x00000000, 0x00000002, 0x00000000, 0x00000000)<br><br>
-    Press POWER to exit.
+  <div class="content" id="scanner-content">
+    <button class="action" onclick="startScan()">Scan starten</button>
+    <pre id="scan-log"></pre>
   </div>
+</div>
 
-  <div id="rickroll">
-    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" allow="autoplay"></iframe>
-  </div>
+<!-- Bluescreen -->
+<div id="bluescreen" onclick="hideBluescreen()">
+  <h1>:(</h1>
+  <p>Ihr PC ist auf einen Bluescreen gelaufen.</p>
+  <p>Stop-Code: HOW2VIRUS_FAKE_ERROR</p>
+  <p>Klicken Sie hier, um neu zu starten...</p>
+</div>
 
-  <audio id="beep" src="https://freesound.org/data/previews/341/341695_5260877-lq.mp3" preload="auto"></audio>
+<!-- Rickroll -->
+<div id="rickroll">
+  <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" allow="autoplay"></iframe>
+</div>
 
-  <script>
-    // Vollbild
-    function enableFullscreen() {
-      const el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen();
+<!-- Musik Steuerung -->
+<div id="music-control" onclick="toggleMusic()">🔈 Musik: Aus</div>
+<audio id="virus-music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/22/audio_57c606b144.mp3?filename=retro-future-11715.mp3" type="audio/mpeg" />
+</audio>
+
+<script>
+  // === Vollbildmodus ===
+  function enableFullscreen() {
+    const el = document.documentElement;
+    if (!document.fullscreenElement) {
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(el.msRequestFullscreen) el.msRequestFullscreen();
     }
+  }
 
-    // Matrix
-    const c = document.getElementById("matrix");
-    const ctx = c.getContext("2d");
-    c.height = window.innerHeight;
+  // === Matrix Effekt ===
+  function startMatrix() {
+    const c = document.getElementById('matrix');
+    const ctx = c.getContext('2d');
     c.width = window.innerWidth;
-    const letters = "01";
+    c.height = window.innerHeight;
+    const letters = '01';
     const fontSize = 14;
     const columns = c.width / fontSize;
-    const drops = Array.from({ length: columns }, () => 1);
+    const drops = [];
+    for(let x=0; x<columns; x++) drops[x] = 1;
 
     function draw() {
-      ctx.fillStyle = "rgba(0,0,0,0.05)";
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, c.width, c.height);
-      ctx.fillStyle = "#0F0";
-      ctx.font = fontSize + "px monospace";
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+      ctx.fillStyle = '#0F0';
+      ctx.font = fontSize + 'px monospace';
+      for(let i=0; i<drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random()*letters.length));
+        ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+        if(drops[i]*fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
       }
     }
-    setInterval(draw, 35);
+    return setInterval(draw, 35);
+  }
 
-    // Drag Windows
-    let offsetX, offsetY;
-    function startDrag(e, win) {
+  // === Drag & Drop Fenster ===
+  function dragElement(elmnt, handle) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    handle.onmousedown = dragMouseDown;
+    function dragMouseDown(e) {
       e.preventDefault();
-      offsetX = e.clientX - win.offsetLeft;
-      offsetY = e.clientY - win.offsetTop;
-      document.onmousemove = function (ev) {
-        win.style.left = ev.clientX - offsetX + "px";
-        win.style.top = ev.clientY - offsetY + "px";
-      };
-      document.onmouseup = () => document.onmousemove = null;
+      pos3 = e.clientX; pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
     }
-
-    // Terminal
-    const term = document.getElementById("terminalContent");
-    let counter = 0;
-    setInterval(() => {
-      term.innerHTML += `<br>admin@root:~$ ./virus${counter++}`;
-      term.scrollTop = term.scrollHeight;
-    }, 1500);
-
-    function rickroll() {
-      document.getElementById("rickroll").style.display = "block";
+    function elementDrag(e) {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
-
-    function blueScreen() {
-      document.getElementById("bluescreen").style.display = "block";
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
     }
-  </script>
+  }
+
+  // Fenster schließen / minimieren
+  function closeWindow(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function minimizeWindow(id) {
+    const win = document.getElementById(id);
+    if(win.style.height !== '30px') {
+      win.dataset.oldHeight = win.style.height;
+      win.dataset.oldWidth = win.style.width;
+      win.style.height = '30px';
+      win.style.overflow = 'hidden';
+    } else {
+      win.style.height = win.dataset.oldHeight || '250px';
+      win.style.overflow = 'auto';
+    }
+  }
+
+  // === Admin Terminal Eingabe ===
+  const adminContent = document.getElementById('admin-content');
+  adminContent.addEventListener('keydown', e => {
+    if(e.key === 'Enter') {
+      e.preventDefault();
+      const lines = adminContent.innerText.split('\n');
+      const currentLine = lines[lines.length - 1].replace(/^admin@root:~\$\s*/, '');
+      let output = '';
+      if(currentLine.trim() === 'help') {
+        output = "Befehle:\nhelp\nclear\nrickroll\nbluescreen\nvirus\nexit";
+      } else if(currentLine.trim() === 'clear') {
+        adminContent.innerText = 'admin@root:~$ ';
+        return;
+      } else if(currentLine.trim() === 'rickroll') {
+        showRickroll();
+        output = "Rickroll gestartet!";
+      } else if(currentLine.trim() === 'bluescreen') {
+        showBluescreen();
+        output = "Bluescreen aktiviert!";
+      } else if(currentLine.trim() === 'virus') {
+        startFakeVirus();
+        output = "Virus gestartet!";
+      } else if(currentLine.trim() === 'exit') {
+        output = "Terminal beendet. (Fenster bleibt offen)";
+      } else {
+        output = "Unbekannter Befehl: " + currentLine;
+      }
+      adminContent.innerText += '\n' + output + '\nadmin@root:~$ ';
+      placeCaretAtEnd(adminContent);
+    }
+  });
+  function placeCaretAtEnd(el) {
+    el.focus();
+    if(typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+      let range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      let sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  }
+
+  // === Virenscanner Fake ===
+  let scanInterval;
+  function startScan() {
+    const log = document.getElementById('scan-log');
+    log.innerText = 'Scan wird gestartet...\n';
+    let progress = 0;
+    clearInterval(scanInterval);
+    scanInterval = setInterval(() => {
+      if(progress >= 100) {
+        clearInterval(scanInterval);
+        log.innerText += '\nAchtung! Trojaner gefunden: HOW2VIRUS_3000.exe\nBitte sofort handeln!';
+        return;
+      }
+      progress += Math.floor(Math.random()*10)+1;
+      if(progress > 100) progress = 100;
+      log.innerText = `Scan läuft... ${progress}%`;
+    }, 400);
+  }
+
+  // === Bluescreen ===
+  function showBluescreen() {
+    document.getElementById('bluescreen').style.display = 'block';
+  }
+  function hideBluescreen() {
+    document.getElementById('bluescreen').style.display = 'none';
+  }
+
+  // === Rickroll ===
+  function showRickroll() {
+    const rick = document.getElementById('rickroll');
+    rick.style.display = 'block';
+  }
+
+  // === Fake Virus Start ===
+  function startFakeVirus() {
+    alert("Virus startet... Simuliere Systemfehler!");
+    showBluescreen();
+  }
+
+  // === Musik Steuerung ===
+  const music = document.getElementById('virus-music');
+  const musicControl = document.getElementById('music-control');
+  let musicPlaying = false;
+
+  function toggleMusic() {
+    if(musicPlaying) {
+      music.pause();
+      musicControl.textContent = '🔈 Musik: Aus';
+    } else {
+      music.play();
+      musicControl.textContent = '🔊 Musik: An';
+    }
+    musicPlaying = !musicPlaying;
+  }
+
+  // Fenster Drag & Drop initialisieren
+  dragElement(document.getElementById('admin-window'), document.getElementById('admin-bar'));
+  dragElement(document.getElementById('scanner-window'), document.getElementById('scanner-bar'));
+
+  // Matrix starten
+  startMatrix();
+
+  // Beim Laden Vollbild versuchen
+  window.onload = () => setTimeout(enableFullscreen, 500);
+</script>
+
 </body>
 </html>
