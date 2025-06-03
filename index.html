@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How2virus 🦠</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: lime;
+      font-family: 'Courier New', monospace;
+      height: 100%;
+      overflow: hidden;
+    }
+    .terminal {
+      padding: 20px;
+      height: 100vh;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      animation: glitch 1s infinite alternate;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red, -2px 0 blue; }
+      100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    }
+    .loader {
+      width: 100%;
+      background: #222;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .bar {
+      height: 100%;
+      background: lime;
+      width: 0;
+      animation: load 5s linear forwards;
+    }
+    @keyframes load {
+      100% { width: 100%; }
+    }
+    .button {
+      background: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body onclick="enableFullscreen()">
+  <div class="terminal" id="terminal">
+    Booting How2virus OS...\n
+  </div>
+
+  <div class="loader"><div class="bar"></div></div>
+
+  <button class="button" onclick="startVirus()">🧨 Selbstzerstörung starten</button>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    const messages = [
+      "Accessing system files...",
+      "Bypassing firewall...",
+      "Injecting smiley.js 😈...",
+      "Launching pixel overload...",
+      "Downloading memes from /dev/null...",
+      "Encrypting cat pictures...",
+      "Installing Minecraft RTX virus...",
+      "Sending prank emails to Elon Musk...",
+      "Formatting reality...",
+      "✔️ Success! Virus simulation complete."
+    ];
+
+    let i = 0;
+    function typeNextLine() {
+      if (i < messages.length) {
+        terminal.innerText += "\n" + messages[i];
+        terminal.scrollTop = terminal.scrollHeight;
+        i++;
+        setTimeout(typeNextLine, 1000);
+      }
+    }
+
+    setTimeout(typeNextLine, 3000);
+
+    function startVirus() {
+      let count = 5;
+      const btn = document.querySelector(".button");
+      const interval = setInterval(() => {
+        btn.innerText = `💥 Selbstzerstörung in ${count}...`;
+        count--;
+        if (count < 0) {
+          clearInterval(interval);
+          terminal.innerText += "\n💣 BOOM! Alles gelöscht! (nicht wirklich 😜)";
+          btn.classList.add("hidden");
+          document.body.style.background = "#900";
+        }
+      }, 1000);
+    }
+
+    function enableFullscreen() {
+      const docElm = document.documentElement;
+      if (docElm.requestFullscreen) {
+        docElm.requestFullscreen();
+      } else if (docElm.webkitRequestFullscreen) {
+        docElm.webkitRequestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+        docElm.mozRequestFullScreen();
+      } else if (docElm.msRequestFullscreen) {
+        docElm.msRequestFullscreen();
+      }
+    }
+
+    window.onload = () => {
+      // Versuch nach kurzem Timeout, wird beim ersten Klick sicher aktiviert
+      setTimeout(() => {
+        enableFullscreen();
+      }, 500);
+    };
+  </script>
+</body>
+</html>
